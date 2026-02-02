@@ -1,14 +1,13 @@
 C4Context
     title System Context Diagram - Logistics System
 
-    %% Layout hints
     UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
 
-    Person(student, "Student User", "A student or admin accessing<br/>the logistics dashboard.")
+    Person(user, "User", "An admin accessing<br/>the logistics dashboard.")
     
     System(logistics, "Logistics System", "Allows users to place orders,<br/>track drivers in real-time,<br/>and generate invoices.")
     
     System_Ext(gcp, "Google Cloud Platform", "Hosts the Invoice<br/>Generator Function (FaaS).")
     
-    Rel(student, logistics, "Places orders, Views Map", "HTTPS/WSS")
+    Rel(user, logistics, "Places orders, Views Map", "HTTPS/WSS")
     Rel(logistics, gcp, "Triggers Invoice Generation", "HTTPS")

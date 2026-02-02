@@ -79,3 +79,12 @@ gcloud functions deploy generateInvoice
 **POST /api/login** - Get JWT token  
 **POST /api/orders** - Create order (requires JWT)  
 **POST /api/track** - Update driver location (requires JWT)
+
+### 1. System Context
+![Context Diagram](./docs/context.mmd)
+
+### 2. Container Diagram
+![Container Diagram](./docs/container.mmd)
+
+### 3. Order Flow
+![Sequence Diagram](./docs/sequence.mmd)

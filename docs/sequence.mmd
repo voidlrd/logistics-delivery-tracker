@@ -1,0 +1,29 @@
+sequenceDiagram
+    autonumber
+    actor User
+    participant Host as Host App
+    participant Gateway as API Gateway
+    participant OrderSvc as Order Service
+    participant Rabbit as RabbitMQ
+    participant FaaS as Invoice Generator
+    
+    User->>Host: Click "Place Order"
+    Host->>Gateway: POST /api/orders
+    
+    Note over Gateway: Verify Auth Token
+    
+    Gateway->>OrderSvc: Proxy Request
+    OrderSvc->>OrderSvc: Save to DB
+    
+    par Async Actions
+        OrderSvc->>Rabbit: Publish "order_created"
+        OrderSvc->>FaaS: Trigger PDF Generation
+    and Response
+        OrderSvc-->>Gateway: 201 Created
+        Gateway-->>Host: 201 Created
+        Host-->>User: Show "Success"
+    end
+    
+    Note over Gateway: Listener
+    Rabbit->>Gateway: Consume "order_created"
+    Gateway->>User: WebSocket: "New Order!"

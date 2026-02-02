@@ -1,0 +1,49 @@
+C4Container
+    title Container Diagram - Logistics System
+
+    %% This forces the diagram to be taller rather than wider
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
+
+    Person(user, "User", "Browser accessing the App")
+
+    Container_Boundary(frontend, "Frontend (Micro-Frontends)") {
+        Container(host, "Host App", "React/Vite", "Main shell application")
+        Container(dashboard, "Dashboard MFE", "React/Vite", "Order stats component")
+        Container(tracking, "Tracking MFE", "React/Vite", "Live map component")
+    }
+
+    Container(nginx, "Reverse Proxy", "Nginx", "Routes traffic to Gateway<br/>and MFEs")
+    
+    Container(gateway, "API Gateway", "Node.js/Express", "Aggregates services,<br/>Auth & WebSockets")
+
+    Container_Boundary(services, "Backend Services") {
+        Container(order_svc, "Order Service", "Node.js", "Handles order placement")
+        Container(track_svc, "Tracking Service", "Node.js", "Ingests driver locations")
+    }
+
+    Container(faas, "Invoice Generator", "Google Cloud Functions", "Generates PDF invoices")
+
+    ContainerDb(db, "Postgres", "SQL Database", "Stores order history")
+    ContainerDb(redis, "Redis", "Cache", "Socket.io Adapter<br/>& Session Store")
+    
+    ContainerQueue(rabbitmq, "RabbitMQ", "Message Broker", "Async notifications")
+    ContainerQueue(kafka, "Kafka", "Event Stream", "Driver location streaming")
+
+    Rel(user, host, "Loads", "HTTP")
+    Rel(host, nginx, "API Calls", "HTTP/WSS")
+    Rel(nginx, gateway, "Proxies", "HTTP/WSS")
+    
+    Rel(gateway, order_svc, "HTTP")
+    Rel(gateway, track_svc, "HTTP")
+    
+    Rel(order_svc, db, "SQL")
+    Rel(order_svc, faas, "HTTPS")
+    Rel(order_svc, rabbitmq, "AMQP")
+    
+    Rel(track_svc, kafka, "TCP")
+    
+    Rel(rabbitmq, gateway, "AMQP")
+    Rel(kafka, gateway, "TCP")
+    
+    Rel(gateway, redis, "TCP")
+    Rel(gateway, user, "WebSockets")

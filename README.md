@@ -88,3 +88,7 @@ gcloud functions deploy generateInvoice
 
 ### 3. Order Flow
 ![Sequence Diagram](./docs/sequence.mmd)
+
+## Tutorial
+A tutorial on **Implementing Serverless Functions in a Microservice Architecture** is available here:
+[View Tutorial PDF](./docs/FaaS%20Tutorial.pdf)
